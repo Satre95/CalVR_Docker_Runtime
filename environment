@@ -1,0 +1,3 @@
+CALVR_HOME=/usr/local
+CALVR_CONFIG_FILE=config.xml
+DISPLAY=${DISPLAY}

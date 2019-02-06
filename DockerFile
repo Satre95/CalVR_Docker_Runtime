@@ -1,0 +1,35 @@
+
+FROM nvidia/cudagl:9.2-runtime-ubuntu18.04
+
+RUN apt update -qqy && apt upgrade -qqy
+# Install the OSG Libraries.
+ADD OSG/lib64/* /usr/local/lib/
+ADD OSG/bin/* /usr/local/bin/
+ADD OSG/include/* /usr/local/include/
+
+# Install the Open Audio client & server libraries.
+ADD OAS/client/include/* /usr/local/include/
+ADD OAS/client/lib64/* /usr/local/lib/
+# TODO: Install server libraries.
+
+# Install the CalVR libraries
+ADD CalVR/bin/* /usr/local/bin/
+ADD CalVR/include/* /usr/local/include/
+ADD CalVR/lib/* /usr/local/lib/
+ADD CalVR/share/* /usr/local/share/
+ADD CalVR/icons /usr/local/icons
+ADD CalVR/resources /usr/local/resources
+ADD CalVR/shaders /usr/local/shaders
+
+# Install other deps from apt
+RUN apt update
+RUN apt install -qqy libomp-dev libmxml-dev libtiff-dev libjpeg-dev libpng-dev libxinerama-dev libxrandr-dev libfreetype6-dev vim sudo git
+# Setup CalVR user
+RUN useradd -m calvr && echo "calvr:calvr" | chpasswd && adduser calvr sudo
+USER calvr
+
+# Add vimrc and setup vim
+ADD .vimrc /home/calvr/.vimrc
+ADD .vim.tar.gz /home/calvr/
+
+CMD /bin/bash
